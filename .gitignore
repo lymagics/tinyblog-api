@@ -1,0 +1,7 @@
+# Environment 
+.env
+.env.api
+.env.db
+
+# Python cache
+__pycache__

@@ -1,0 +1,4 @@
+-r base.txt
+
+Faker==17.0.0
+flake8==6.0.0

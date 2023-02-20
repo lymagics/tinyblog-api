@@ -1,0 +1,38 @@
+name: continuous-integration-workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: python:slim
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+
+    steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: pip install -r requirements/production.txt
+
+      - name: Test with Django tests
+        run: |
+          cd src
+          python manage.py migrate
+          python manage.py test
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+
+      - name: Lint with flake8
+        run: |
+          pip install flake8
+          flake8 . --ignore=E501
